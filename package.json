@@ -1,0 +1,11 @@
+{
+  "name": "pocket-closet-scrapper",
+  "version": "0.0.1",
+  "description": "scrapper playground",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC"
+}
