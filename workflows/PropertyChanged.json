@@ -10,18 +10,23 @@
       "workflowNotes": {},
       "metrics": {
         "created": "2019-07-30T06:48:29.135Z",
-        "lastUpdated": "2019-07-30T06:48:54.835Z",
+        "lastUpdated": "2019-08-01T20:16:04.863Z",
         "chxbot": "7.4.0\n",
         "version": "7.5.0"
       },
       "id": "3cee7088-53c3-45a1-bc7e-f7ace52f5907"
     },
-    "name": "SimpleDiff",
+    "name": "test",
     "args": [
       {
-        "@log": {
+        "@input": {
+          "inputName": "HelloWorld",
+          "myTestInput": 1,
+          "@to": "myTestInput",
+          "global": true,
+          "required": true,
           "mimic": {
-            "id": "d700ccac-f34b-46c3-9c26-f012458c796c",
+            "id": "b71a9242-bfb4-4129-84db-1cfcedef827c",
             "source": "automation-core",
             "version": "7.4.0"
           }

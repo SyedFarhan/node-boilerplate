@@ -29,5 +29,6 @@ module.exports = {
     'import/newline-after-import': 0,
     'import/no-unresolved': 2,
     'import/prefer-default-export': 0,
+    'no-use-before-define': ['error', { functions: false, classes: false }],
   },
 };

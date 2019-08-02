@@ -1,25 +1,29 @@
-import { renderHTML } from './render';
+import Tokenizer from './tokenizer';
 import {
-  createEditGraph,
+  createEditDistanceGraph,
   findEditPath,
   createEditInstructions,
-  tokenizeBotJson,
-} from './differ';
+} from './editMapper';
+import { createHTMLString, createDiffJSON } from './render';
 
-import FIRST_WORKFLOW from '../workflows/SimpleDiff.bot';
-import SECOND_WORKFLOW from '../workflows/PropertyChanged.bot';
+import FIRST_WORKFLOW from '../workflows/SimpleDiff.json';
+import SECOND_WORKFLOW from '../workflows/PropertyChanged.json';
 
-function loadBotfile(data) {
-  return JSON.parse(data);
-}
+const tokenizedWorkflows = {
+  sourceTokens: Tokenizer.tokenizeBotJson(FIRST_WORKFLOW),
+  targetTokens: Tokenizer.tokenizeBotJson(SECOND_WORKFLOW),
+};
 
-const first = tokenizeBotJson(loadBotfile(FIRST_WORKFLOW));
-const second = tokenizeBotJson(loadBotfile(SECOND_WORKFLOW));
+const editDistanceGraph = createEditDistanceGraph(tokenizedWorkflows);
+const editPath = findEditPath({ editDistanceGraph, ...tokenizedWorkflows });
 
-const graph = createEditGraph(first, second);
-const path = findEditPath(graph, first, second);
+const difference = createEditInstructions({
+  editPath,
+  ...tokenizedWorkflows,
+  TOKENS: Tokenizer.getTokens(),
+});
 
-const difference = createEditInstructions(path, first, second);
-// console.log(difference);
-document.html = renderHTML(difference);
-// fs.writeFileSync('output.html', renderHTML(difference));
+window.addEventListener('DOMContentLoaded', () => {
+  document.body.innerHTML = createHTMLString(difference);
+  createDiffJSON(difference);
+});

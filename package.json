@@ -1,17 +1,19 @@
 {
   "name": "workflow-differ",
-  "version": "1.0.0",
-  "description": "My webpack project",
+  "version": "0.0.1",
+  "description": "Workflow diffing tool. Generates HTML and a workflow file with diff annotations.",
   "main": "main.js",
-  "scripts": {
+  "scripts": { 
+    "start": "webpack-dev-server",
     "test": "test",
     "lint": "eslint *.js **/*.js",
     "build": "webpack",
-    "diff": "build && && chrome ./build/index.html"
+    "build:dev": "webpack-dev-server",
+    "diff": "node main.js"
   },
-  "author": "",
+  "author": "Olive",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": { 
     "ramda": "^0.26.1"
   },
   "devDependencies": {

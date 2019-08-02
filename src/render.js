@@ -6,12 +6,13 @@ import {
   ACTION_REGEX,
 } from './constants';
 
-export function renderHTML(diffs) {
+const patternAmp = /&/g;
+const patternLT = /</g;
+const patternGT = />/g;
+const patternPara = /\n/g;
+
+export function createHTMLString(diffs) {
   const html = [];
-  const patternAmp = /&/g;
-  const patternLT = /</g;
-  const patternGT = />/g;
-  const patternPara = /\n/g;
   for (let index = 0; index < diffs.length; index += 1) {
     const op = diffs[index][0]; // Operation (insert, delete, equal)
     const data = diffs[index][1]; // Text of change.
@@ -89,4 +90,71 @@ export function renderHTML(diffs) {
     }
   }
   return html.join('');
+}
+
+// Simple parser for text properties. This needs to handle object, array property types as well
+function parseProperty(text, operation) {
+  const splitIndex = text.indexOf(':');
+  const propertyKey = `${text.slice(0, splitIndex)}::${operation}`;
+  const propertyValue = text.slice(splitIndex + 1, text.length);
+
+  try {
+    return {
+      propertyKey,
+      propertyValue: JSON.parse(propertyValue),
+    };
+  } catch (e) {
+    return {
+      propertyKey,
+      propertyValue: text.slice(splitIndex + 1, text.length),
+    };
+  }
+}
+
+function isProperty(data) {
+  return !data.match(ACTION_REGEX) && !data.match(ACTION_LIST_REGEX);
+}
+
+function isAction(data) {
+  return data.match(ACTION_REGEX);
+}
+
+function isActionStart(flag) {
+  return flag.match(/start/);
+}
+
+export function createDiffJSON(diffs) {
+  const workflowJSON = { '@workflow': { args: [] } };
+  const diffJSON = workflowJSON['@workflow'];
+  let currentObject = diffJSON;
+
+  for (let index = 1; index < diffs.length; index += 1) {
+    const operation = diffs[index][0]; // Operation (insert, delete, equal)
+    const data = diffs[index][1]; // Text of change.
+
+    const text = data
+      .replace(patternAmp, '&amp;')
+      .replace(patternLT, '&lt;')
+      .replace(patternGT, '&gt;')
+      .replace(patternPara, '');
+
+    if (isProperty(data)) {
+      // It's a property so we need to parse the text into key/value
+      // and add it to the current object (action or block)
+      const { propertyKey, propertyValue } = parseProperty(text, operation);
+      currentObject[propertyKey] = propertyValue;
+    } else if (isAction(data)) {
+      const values = data.split('::');
+      if (isActionStart(values[1])) {
+        const keyOp = `${values[0]}::${operation}`;
+        currentObject = {};
+        const actionObject = { [keyOp]: currentObject };
+        diffJSON.args.push(actionObject);
+      } else {
+        console.log(`${index}:${data}`);
+      }
+    }
+  }
+  console.log(workflowJSON);
+  return workflowJSON;
 }
