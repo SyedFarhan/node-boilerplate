@@ -111,6 +111,10 @@ function parseProperty(text, operation) {
   }
 }
 
+function isVariable(key) {
+  return key === 'to';
+}
+
 function isProperty(data) {
   return !data.match(ACTION_REGEX) && !data.match(ACTION_LIST_REGEX);
 }
@@ -124,9 +128,10 @@ function isActionStart(flag) {
 }
 
 export function createDiffJSON(diffs) {
-  const workflowJSON = { '@workflow': { args: [] } };
+  const workflowJSON = { '@workflow': {} };
   const diffJSON = workflowJSON['@workflow'];
   let currentObject = diffJSON;
+  const actionLists = [];
 
   for (let index = 1; index < diffs.length; index += 1) {
     const operation = diffs[index][0]; // Operation (insert, delete, equal)
@@ -142,16 +147,33 @@ export function createDiffJSON(diffs) {
       // It's a property so we need to parse the text into key/value
       // and add it to the current object (action or block)
       const { propertyKey, propertyValue } = parseProperty(text, operation);
-      currentObject[propertyKey] = propertyValue;
+      if (isVariable(propertyKey)) {
+        currentObject[`@${propertyKey}`] = propertyValue;
+      } else {
+        currentObject[propertyKey] = propertyValue;
+      }
     } else if (isAction(data)) {
       const values = data.split('::');
       if (isActionStart(values[1])) {
         const keyOp = `${values[0]}::${operation}`;
         currentObject = {};
         const actionObject = { [keyOp]: currentObject };
-        diffJSON.args.push(actionObject);
+        actionLists[0].push(actionObject);
       } else {
         console.log(`${index}:${data}`);
+      }
+    } else {
+      // Its a block so we need to add a new actionList to the stack
+      const values = data.split('::');
+      if (values[2].match(/start/)) {
+        const newActionList = [];
+        currentObject[values[1]] = newActionList;
+        actionLists.unshift(newActionList);
+      } else if (actionLists.length > 0) {
+        // Block actions done, so remove it from the stack
+        actionLists.shift();
+      } else {
+        // done?
       }
     }
   }

@@ -33,7 +33,6 @@ function cleanBotdata(data) {
   } else if (data && typeof data === 'object') {
     Object.keys(data).forEach(key => {
       if (key === 'mimic') {
-        delete data[key].id; // id changes are relevant info to determining edits
         delete data[key].metrics; // this would always be different due to timestamps, maybe just remove timestamps?
         // if (Object.keys(data[key]).length === 0) {
         //   delete data[key];

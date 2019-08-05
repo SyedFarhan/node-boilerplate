@@ -30,5 +30,6 @@ module.exports = {
     'import/no-unresolved': 2,
     'import/prefer-default-export': 0,
     'no-use-before-define': ['error', { functions: false, classes: false }],
+    'no-console': 0,
   },
 };

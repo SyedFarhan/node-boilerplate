@@ -10,7 +10,7 @@
       "workflowNotes": {},
       "metrics": {
         "created": "2019-07-30T06:48:29.135Z",
-        "lastUpdated": "2019-07-30T06:48:54.835Z",
+        "lastUpdated": "2019-08-05T15:22:13.443Z",
         "chxbot": "7.4.0\n",
         "version": "7.5.0"
       },
@@ -18,6 +18,20 @@
     },
     "name": "test",
     "args": [
+      {
+        "@input": {
+          "inputName": "HelloWorld",
+          "myTestInput": 1,
+          "@to": "myTestInput",
+          "global": true,
+          "required": true,
+          "mimic": {
+            "id": "b71a9242-bfb4-4129-84db-1cfcedef827c",
+            "source": "automation-core",
+            "version": "7.4.0"
+          }
+        }
+      },
       {
         "@log": {
           "mimic": {

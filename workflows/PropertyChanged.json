@@ -10,11 +10,11 @@
       "workflowNotes": {},
       "metrics": {
         "created": "2019-07-30T06:48:29.135Z",
-        "lastUpdated": "2019-08-01T20:16:04.863Z",
+        "lastUpdated": "2019-08-05T15:21:34.911Z",
         "chxbot": "7.4.0\n",
         "version": "7.5.0"
       },
-      "id": "3cee7088-53c3-45a1-bc7e-f7ace52f5907"
+      "id": "3cee7088-53c3-45a1-bc7e-f7ace52f5908"
     },
     "name": "test",
     "args": [
@@ -27,6 +27,50 @@
           "required": true,
           "mimic": {
             "id": "b71a9242-bfb4-4129-84db-1cfcedef827c",
+            "source": "automation-core",
+            "version": "7.4.0"
+          }
+        }
+      },
+      {
+        "@log": {
+          "mimic": {
+            "id": "d700ccac-f34b-46c3-9c26-f012458c796c",
+            "source": "automation-core",
+            "version": "7.4.0"
+          }
+        }
+      },
+      {
+        "@if": {
+          "then": [
+            {
+              "@if": {
+                "then": [
+                  {
+                    "@log": {
+                      "args": "log2",
+                      "level": "info",
+                      "mimic": {
+                        "id": "8787773d-9b39-43b8-ba9c-e37206410b5e",
+                        "source": "automation-core",
+                        "version": "7.4.0"
+                      }
+                    }
+                  }
+                ],
+                "else": [],
+                "mimic": {
+                  "id": "3f623de4-9213-4e04-872c-f208507da4aa",
+                  "source": "automation-core",
+                  "version": "7.4.0"
+                }
+              }
+            }
+          ],
+          "else": [],
+          "mimic": {
+            "id": "a9004676-812d-47ff-a774-0c400d0a59a3",
             "source": "automation-core",
             "version": "7.4.0"
           }
